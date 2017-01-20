@@ -102,6 +102,18 @@ collector {
       }
     }
 
+    pubsub {
+      topic {
+        good: "{{collectorPubSubTopicGoodName}}"
+        bad: "{{collectorPubSubTopicBadName}}"
+      }
+
+      # if set to 'env' it will use the GOOGLE_APPLICATION_CREDENTIALS environment variable,
+      # else, it assumes an absolute path
+      google-auth-path: "{{googleAuthPath}}"
+      google-project-id: "{{googleProjectId}}"
+    }
+
     # Incoming events are stored in a buffer before being sent to Kinesis/Kafka.
     # The buffer is emptied whenever:
     # - the number of stored records reaches record-limit or

@@ -95,6 +95,11 @@ object ScalaCollector extends App {
       val bad  = new KafkaSink(collectorConfig, InputType.Bad)
       CollectorSinks(good, bad)
     }
+    case Sink.PubSub => {
+      val good = new PubSubSink(collectorConfig, InputType.Good)
+      val bad  = new PubSubSink(collectorConfig, InputType.Bad)
+      CollectorSinks(good, bad)
+    }
     case Sink.Stdout  => {
       val good = new StdoutSink(InputType.Good)
       val bad = new StdoutSink(InputType.Bad)
@@ -143,7 +148,7 @@ object Helper {
 // store this enumeration.
 object Sink extends Enumeration {
   type Sink = Value
-  val Kinesis, Kafka, Stdout, Test = Value
+  val Kinesis, Kafka, Stdout, Test, PubSub = Value
 }
 
 // How a collector should set cookies
@@ -180,6 +185,7 @@ class CollectorConfig(config: Config) {
     case "kafka" => Sink.Kafka
     case "stdout" => Sink.Stdout
     case "test" => Sink.Test
+    case "pubsub" => Sink.PubSub
     case _ => throw new RuntimeException("collector.sink.enabled unknown.")
   }
 
@@ -205,6 +211,13 @@ class CollectorConfig(config: Config) {
   private val kafkaTopic = kafka.getConfig("topic")
   val kafkaTopicGoodName = kafkaTopic.getString("good")
   val kafkaTopicBadName = kafkaTopic.getString("bad")
+
+  private val pubsub = sink.getConfig("pubsub")
+  val googleAuthPath = pubsub.getString("google-auth-path")
+  val googleProjectId = pubsub.getString("google-project-id")
+  private val pubsubTopic = pubsub.getConfig("topic")
+  val pubsubTopicGoodName = pubsubTopic.getString("good")
+  val pubsubTopicBadName = pubsubTopic.getString("bad")
 
   private val buffer = sink.getConfig("buffer")
   val byteLimit = buffer.getInt("byte-limit")
