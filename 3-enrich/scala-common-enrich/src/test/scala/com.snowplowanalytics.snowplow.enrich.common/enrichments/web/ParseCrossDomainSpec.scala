@@ -24,9 +24,6 @@ import org.specs2.scalaz.ValidationMatchers
 import scalaz._
 import Scalaz._
 
-// SnowPlow Utils
-import com.snowplowanalytics.util.Tap._
-
 class ParseCrossDomainSpec extends Specification with DataTables with ValidationMatchers { def is =
 
   "This is a specification to test the parseCrossDomain function"                                ^
